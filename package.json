@@ -1,0 +1,28 @@
+{
+  "name": "aris",
+  "version": "1.0.7",
+  "description": "Write HTML in JS easily.",
+  "main": "aris.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vectorized/aris.git"
+  },
+  "keywords": [
+    "aris",
+    "html",
+    "css",
+    "prefixer",
+    "generate",
+    "jsx",
+    "spa"
+  ],
+  "author": "Benjamin Kang Yue Sheng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Vectorized/aris/issues"
+  },
+  "homepage": "https://github.com/Vectorized/aris#readme"
+}
