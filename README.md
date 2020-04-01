@@ -68,7 +68,7 @@ el.innerHTML = HTML(['div', {class: 'dropdown'},
       return ['a', {class: 'dropdown-item'}, x]
     }]
   ]
-]));
+]);
 ```
 
 Wow! Such syntax. Much highlighting.  
