@@ -8,7 +8,9 @@ Aris is a simple library \(\< 5kb minified + gzipped\) that:
 - Does routing with page anchor tags (hash routing, e.g. `href="#path/to/page"`) 
 
 **Just these 3 functions alone** will allow you to easily build frontend web-apps   
-(e.g. Single page applications, Progressive web apps) that are [performant and scalable](#Advantages). 
+(e.g. Single page applications, Progressive web apps) that are [performant and scalable](#Advantages).  
+
+Aris is so simple that its whole documentation is this README.   
 
 ## Download 
 
@@ -24,7 +26,7 @@ This breaks syntax highlighting, causes mistakes, and a LOT of stress.
 
 It is little wonder why most people resort to backend templating solutions, or use frontend templating frameworks/libraries/transpilers.   
 
-Unfortunately, these solutions are not good enough (even JSX is not good enough by our standards, seriously).   
+Unfortunately, these solutions are not good enough (even JSX).   
 Their are usually either too complex, clunky, slow, obscure, incomplete, bloated, or inflexible. 
 
 ## The Solution
@@ -71,7 +73,7 @@ el.innerHTML = HTML(['div', {class: 'dropdown'},
 ]);
 ```
 
-Wow! Such syntax. Much highlighting.  
+Wow! Such syntax. Much clean.  
 
 Notice how the HTML is being expressed in an intermediate form with native JS objects and arrays.  
 \(We call this intermediate form a HTML *context*\).
@@ -156,6 +158,13 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
 
   To allow HTML to be used in text, Aris does not auto-escape special HTML characters.  
   Please use this function to manually escape the characters where intended.
+
+### HTML Boolean Attributes
+
+- `HTML.bool("checked", true)`    =>    `{"checked": "checked"}`    
+  `HTML.bool("checked", false)`    =>    `""`   
+  HTML boolean attributes are specified as false by totally omitting it,
+  as such, we created a helper function to make this easier to write.
 
 ### Lazy Loading
 
@@ -250,47 +259,26 @@ HTML(['svg', {xmlns: 'http://www.w3.org/2000/svg',
 
 You can even use this to create complex animated SVGs. ;)
 
+## Why use Aris? 
+
+Just use Aris. Seriously.   
+
+Aris will save you precious time, effort, and brain space.    
+
+Your code will be shorter, cleaner, and more performant.   
+
 ## Advantages
 
-- You can make functions to return HTML contexts, enabling you to reuse common HTML.  
-  *"Write less, do more!" - jQuery*
-- You can use loops to create contexts (a context is essentially an array).
-- You can add attributes or children to contexts to specialize contexts for different use cases. 
-- Because our contexts are simply good ol' JS arrays and objects,   
-  you can use your favourite utility libraries (e.g. Lodash, Rambda) to create contexts!   
-  (other libraries which use prototyped objects or templates do not offer this flexibility)
-- Syntax errors are detected by the JS parser when the code is executed.  
-  You can check the browser console for the exact line of the error if your page has display errors.
-- No more incorrect HTML closing tags! 
-- Inline and loaded CSS styles are *auto-magically* prefixed.
-- You can easily create complex DOM updates in a single call, resulting in buttery smooth performance.
-- Code is automatically syntax highlighted in most text editors without special plugins.
-- Code is autocompleted in most text editors (e.g. SublimeText will auto-close braces for you).
-- No need for transpilers and complicated build tools. A browser and text editor is all you need.   
-  Get up to speed quick!  
-- Makes debugging much easier (it's just plain ol' JS). 
-- Greatly reduce developer onboarding times (again, it's just plain ol' vanilla JS). 
-- Zero dependencies.
-- Thoroughly battle-tested for over a decade.   
-- Compatible with IE 9+, and practically every other major browser.
-- Compatible with other JS frameworks/libraries out of the box. 
-- You can do **ALL** your HTML generation on the frontend now, resulting in **MUCH** lower server load.
-- Naturally, you'll also have better seperation between data and UX logic.  
-- For teams, frontend and backend coders can work in parallel better.  
-- A happier life.
-
-We challenge you to find an alternative that gives you all of the above. 
+- Just plain old JS.    
+- Zero dependencies.    
+- No tooling needed.    
+- Easy. Learn once, use forever.   
+- Automagic CSS prefixing.    
+- Fast.
 
 ## Performance
 
-Don't worry about it!  
-
-We have heavily optimized and profiled Aris.  
-It performs with *so* little overhead, it's *as if* you have written that HTML and CSS in plain text.  
-Even tens of megabytes can be processed in a tiny fraction of a second on slow machines.  
-You'll hardly notice a thing.
-
-You should *probably be worried* about performance, if you are *not* using Aris. ;)
+Aris performs with *so* little overhead, it's *as if* you have written that HTML and CSS in plain text.  
 
 ## Support
 
@@ -301,40 +289,33 @@ If you have any suggestions, questions, or bug reports, we will be very glad to 
 
 - **How does Aris help me create high-performance user interfaces?**
 
-  Aris does not do DOM diffing like React.  
-  Its approach to blazing-fast speed is very dead simple:  
-  by enabling you to create complex HTML easily, with minimal processing overhead.  
-  Instead of changing the contents of many DOM elements, one after another,  
-  you can simply update them with the combined HTML in one go.  
-  
-  This minimizes reflows, and if done properly, can be as fast, if not faster than DOM diffing.  
+  Our approach to speed is simply to allow easy creation of complex HTML, with minimal overhead.  
+  Instead of changing the contents of many DOM elements, one after another,   
+  you will just create and set the combined HTML in one go.
 
-  You must however, know which DOM elements you need to update.  
-  This should be easy if you are used to VanillaJS or jQuery.
+  This minimizes reflows.   
 
-  Our choice of using plain arrays and objects allows us to leverage the parser of the JS engine,  
-  which is already in the form of highly-optimized, compiled, native machine code. 
+  If you know what you are doing, this will be faster than DOM-diffing. 
 
-  This is way faster than using templates based on regex or loop based parsing implemented in JS.
+  Because Aris is just plain old Javascript, all HTML creation is extremely close to the metal,  
+  fully leveraging the native optimized compiled machine code of the JS engine.
+
+  This is much faster than using templating systems based on regex.
 
 - **Why another JS library/framework? How does this compare to \<insert name here\>?**
 
   The existing solutions in the JS community are simply **not** good enough.  
   Many of them require you to call functions everywhere and remember to provide the correct arguments in order.  
-  Some of them pollute the namespace of short variable names unnecessarily.  
-  You also cannot pass around intermediate HTML contexts and specialize them.  
-
-  There are many similar libraries out there.  
-  But they all have some areas that could be done better.  
-  They are just not as concise, flexible, performant, lightweight and complete as Aris.  
+  Many of them pollute the namespace of short variable names unnecessarily.  
+  Many of them require tooling to work well.  
+  Many of them are just not good enough.   
+  
+  Just use Aris and you will quickly understand why.  
 
   We adopt a no-compromise approach for Aris. Every part is meticulously and purposefully crafted.    
   We aim for a minimal code size, but not at the cost of completeness and ease of use.  
-  Most tiny frameworks out there do not provide CSS prefixing, but Aris does.  
-  Because Aris cares for your convenience!  
-  (Aris is actually only < 0.2kb minified + gzipped if you only include the core HTML writing function).
   
-- **Why the name Aris?**
+- **What does Aris stands for?**
   
   Aris stands for "A Revolution In Syntax".
   
