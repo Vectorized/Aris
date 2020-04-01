@@ -239,8 +239,7 @@
 	var head = noBrowser ? noop : document.head;
 
 	var splitWords = function (s) {
-		var a = [], m;
-		while (m = splitWordsRe.exec(s)) a.push(m[0]);
+		for (var a = [], m; m = splitWordsRe.exec(s);) a.push(m[0]);
 		return a;
 	};
 	var populateCaseVariations = function (o) {	
@@ -255,12 +254,12 @@
 		}
 		return d;
 	};
-	var ts = Object.prototype.toString;
 	var ce = function (x) { return document.createElement(x); };
 	var hasKey = function (o, k) { return o.hasOwnProperty(k); };
-	var isArray = function (x) { return x && ts.call(x) == '[object Array]' };
-	var isObject = function (x) { return x && ts.call(x) == '[object Object]' };
-	var isFunction = function (f) { return f && ts.call(f) == '[object Function]'; };
+	var isT = function (s) { return (function (x) { return x && Object.prototype.toString.call(x) == '[object '+s+']' }) };
+	var isArray = isT('Array');
+	var isObject = isT('Object');
+	var isFunction = isT('Function');
 	var lc = function (s) { return s.toLowerCase(); };
 	var uc = function (s) { return s.toUpperCase(); };
 	var trim = function (s) { return String.prototype.trim ? s.trim() : s.replace(stringTrimRe, ''); };
@@ -481,7 +480,7 @@
 				}
 				v = fixCSSFunctions(v);
 				if (!(cssProps[k])) {
-					for (var pf in cssPrefixes) {
+					for (pf in cssPrefixes) {
 						af[pf + k] = v;
 					}
 				}
