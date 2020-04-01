@@ -1,5 +1,5 @@
 /*!
- * Aris JavaScript Library v1.0.7
+ * Aris JavaScript Library v1.0.8
  * @author Benjamin Kang Yue Sheng
  * MIT license
  * 
@@ -651,24 +651,49 @@
 		return loadFiles(urls);
 	};
 
+	var mapNext = function (context, i) {
+		var v = context[i].slice(), j, o = i + 1, n = v.length, r = '';
+		for (o = i + 1; isFunction(context[o]); ++o) 
+			for (j = 0; j < n; ++j) 
+				v[j] = context[o](v[j]);
+		for (j = 0; j < n; ++j) 
+			r += HTML(v[j]);
+		return {r: r, i: o - 1};
+	};
+
 	var HTML = function(context) {
 
 		var a = arguments, n = context.length;
 		if (a.length > 1) return HTML(a);
 
-		var r, i, obj, k, k2, t, v, css, mSub,
+		var r, i, obj, k, k2, t, v, css, mSub, j, mn,
 		tag = context[0], content = '', attrs = {}, concats = [];; 
 		
 		if (!isArray(context)) return '' + context;
 		if (isArray(context[0]) && n) {
-			for (r = '', i = 0; i < n; i++) r += HTML(context[i]); 
+			for (r = '', i = 0; i < n; i++) {
+				if (isFunction(context[i+1])) {
+					mn = mapNext(context, i);
+					r += mn.r;
+					i = mn.i;
+				} else {
+					r += HTML(context[i]); 	
+				}
+				
+			}
 			return r;
 		}
 		
-		for (i = 1; i < n; i++) if (context[i]) {
+		for (i = 1; i < n; i++) if (context[i] !== null) {
 			obj = context[i];
 			if (isArray(obj)) {
-				content += HTML(obj); 
+				if (isFunction(context[i+1])) {
+					mn = mapNext(context, i);
+					content += mn.r;
+					i = mn.i;
+				} else {
+					content += HTML(obj); 
+				}
 			} else if (isObject(obj)) {
 				for (k in obj) {
 					v = obj[k];
@@ -707,7 +732,7 @@
 			} else {
 				t += attrs[k];
 			}
-			r += ' ' + k + '="' + t + '"';
+			r += ' ' + k + '="' + HTML.escape(t) + '"';
 		}
 		
 		if (emptyTags[lc(trim(tag))] && !content.length)
@@ -717,15 +742,24 @@
 		return r;
 	};
 
+	HTML.bool = function (name, isTrue) {
+		var attrs = {};
+		if (isTrue) attrs[name] = name;
+		return attrs;
+	};
+
+	var htmlEscapeChars = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#039;'
+	}, 
+	htmlEscapeRe = /[&<>"']/g, 
+	htmlEscapeFunc = function(m) { return htmlEscapeChars[m] };
+
 	HTML.escape = function(text) {
-		var chars = {
-			'&': '&amp;',
-			'<': '&lt;',
-			'>': '&gt;',
-			'"': '&quot;',
-			"'": '&#039;'
-		};
-		return text.replace(/[&<>"']/g, function(m) { return chars[m]; });
+		return text.replace(htmlEscapeRe, htmlEscapeFunc);
 	};
 
 	HTML.SVG = function(width, height) { 
@@ -849,7 +883,7 @@
 			}, 100);
 		}	
 	};
-	
+
 	if (!noBrowser) {
 		HTML.autoFixCSS = autoFixCSS;
 		HTML.load = load;

@@ -31,28 +31,30 @@ Their are usually either too complex, clunky, slow, obscure, incomplete, bloated
 
 Imagine you want to write the following shit:
 
-```ruby
-$('.page').html(['<div class="dropdown">',
-  '<button class="btn dropdown-toggle"',
-  'type="button"',
-  'id="dropdownMenuButton"',
-  'data-toggle="dropdown"',
-  'aria-haspopup="true"',
-  'aria-expanded="false">',
-    dropdown.text,
-  '</button>',
-  '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">',
-    $.map(dropdown.values, function (x) {
-      return ['<a class="dropdown-item">', x ,'</a>'].join('')
-    }).join(''),
-  '</div>',
-'</div>'].join(''));
+```javascript
+var dropdownHTML = '';
+for (var i = 0; i < dropdown.values.length; ++i) {
+  dropdownHTML += '<a class="dropdown-item">' + dropdown.values[i] + '</a>';
+}
+el.innerHTML = '<div class="dropdown">' +
+  '<button class="btn dropdown-toggle"' +
+  'type="button"' +
+  'id="dropdownMenuButton"' +
+  'data-toggle="dropdown"' +
+  'aria-haspopup="true"' +
+  'aria-expanded="false">' +
+    dropdown.text +
+  '</button>' +
+  '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">' +
+    dropdownHTML +
+  '</div>' +
+'</div>';
 ```
 
 Wouldn't it be better to write it like:
 
-```ruby
-$('.page').html(HTML(['div', {class: 'dropdown'},
+```javascript
+el.innerHTML = HTML(['div', {class: 'dropdown'},
   ['button', dropdown.text, {
     class: 'btn dropdown-toggle', 
     type: 'button', 
@@ -62,9 +64,9 @@ $('.page').html(HTML(['div', {class: 'dropdown'},
     ariaExpanded: false
   }],
   ['div', {class: 'dropdown-menu', ariaLabelledby: 'dropdownMenuButton'},
-    $.map(dropdown.values, function (x) { 
+    [dropdown.values, function (x) { 
       return ['a', {class: 'dropdown-item'}, x]
-    })
+    }]
   ]
 ]));
 ```
@@ -85,12 +87,13 @@ Creates a HTML string with the context.
 
 #### Example:
 
-```ruby
+```javascript
 HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"}, 
     "Text",
     ["a", {href: "example.com", target: "_blank"}, "link"],
     {style: {width: 1, opacity: 0.5}, class: "c", pos: 1},
-    [["div", 0], ["div", 1]]
+    ['A', 'B', 'C'], function (x) { return ["div", x] }, 
+    [ [0, 1, 2], function (x) { return ["span", x] } ]
 ])
 ```
 
@@ -101,7 +104,8 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
   ariaLabel="x" aria-label="x" aria_label="x" pos="1">
     Text
     <a href="example.com" target="_blank">link</a>
-    <div>0</div><div>1</div>
+    <div>A</div><div>B</div><div>C</div>
+    <span>0</span><span>1</span><span>2</span>
 </div>
 ```
 
@@ -138,6 +142,11 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
 - Other attributes are replaced if repeated in an object.  
      `['div', {id: 'a'}, 'x', {id: 'b'}]`    =>    `<div id="b">x</div>`
 
+- If an element is an array, and the next element is a function,   
+  the array will be automatically mapped to the function.   
+     `['div', [1,2,3], function (x) { return x*2 }]`    =>    `<div>246</div>`   
+     `['div', [[1,2,3], function (x) { return x*2 }] ]`    =>    `<div>246</div>`
+
 ## Other Functions
 
 ### Escaping HTML special characters
@@ -171,10 +180,10 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
 - `HTML.route("#path/to/page/anchor", fn)`  
   Attaches the function `fn` to `#path/to/page/anchor`.  
 
-- `HTML.route.go(#path/to/page/anchor")`  
+- `HTML.route.go("#path/to/page/anchor")`  
   Executes the function attached to `#path/to/page/anchor`.  
 
-- `HTML.route.go(#path/to/page/:anchor")`  
+- `HTML.route.go("#path/to/page/:anchor")`  
   Attemps to execute the function attached to the path.   
   The prefix `:` on the path component denotes that it is is default option.  
   If the visitor has visited `#path/to/page/one`, or if the address bar points to `#path/to/page/one`, it will execute the function attached to `#path/to/page/one`.  
@@ -199,7 +208,7 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
 
 #### Example:
 
-```ruby
+```javascript
 var SVG = HTML.SVG, P = HTML.SVG.Path;
 HTML(SVG(30, 30, 
    ['circle', {class: 'frame', cx: 15, cy: 15, r: 12}],
@@ -213,7 +222,7 @@ HTML(SVG(30, 30,
 
 **Is equivalent to:**
 
-```ruby
+```javascript
 HTML(['svg', {xmlns: 'http://www.w3.org/2000/svg',
   width: '30px', height: '30px', viewBox: '0 0 30 30'},
     ['circle', {class: 'frame', cx: 15, cy: 15, r: 12}],
@@ -339,11 +348,6 @@ If you have any suggestions, questions, or bug reports, we will be very glad to 
   `HTML` => `aris`  
   `HTML.SVG` => `aris.svg`  
   `HTML.SVG.Path` => `aris.svg.path`  
-
-## Coming Soon
-
-- A simple 3 page web example.
-- `HTML.load` for preloading images.
 
 ## License
 
