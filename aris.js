@@ -813,7 +813,7 @@
 	for (var c in svgCmds) 
 		HTML.SVG.Path[c] = svgPathAppender(c);
 	
-	var routes, savedRoutes, routesInited = 0;
+	var routes, savedRoutes, routesInited = 0, refreshable = 0, refreshEls = [];
 
 	var hashComps = function (h) {
 		if (!isUndefined(h) && isArray(h)) {
@@ -831,7 +831,7 @@
 		}
 	};
 
-	var execRoute = function (h) {
+	var execRoute = function (h, s) {
 		var comps, p = '', e, c, i;
 		if (!isUndefined(h) && isArray(h)) {
 			comps = h;
@@ -847,11 +847,11 @@
 					c = savedRoutes[p];	
 				}
 			}
-			savedRoutes[p] = c;
+			if (!s) savedRoutes[p] = c;
 			p += c;
 		}
-		if (p in routes) routes[p]();
-		return false;
+		if (!s) (routes[p] || noop)();
+		return p;
 	};
 
 	var wlh = function () { return window.location.hash; };
@@ -890,22 +890,52 @@
 		HTML.load = load;
 		HTML.route = function (r, fn) {
 			setupHashChange();
-			if (isFunction(fn)) {
-				routes[hashComps(r).join('/')] = fn;
+			var h = hashComps(r).join('/');
+			if (!isUndefined(r) && isFunction(fn)) {
+				routes[h] = fn;
+				// return HTML so that we can chain 
+				// HTML.route('a', fn).route('b', fn)
 				return HTML; 
+			} else if (!isUndefined(r) && isUndefined(fn)) {
+				return routes[execRoute(h, 1)];
 			} else {
+				// If no args are provided, 
+				// return the window.location.hash splitted.
 				return hashComps(wlh());
 			}
 		};
 
+		HTML.route.path = function (r) {
+			return isUndefined(r) ? hashComps(wlh()).join('/') : execRoute(r, 1);
+		}
+
 		HTML.route.go = function (r) {
 			setupHashChange();
-			if (!isUndefined(r)) {
-				return execRoute(r);
-			} else {
-				return execRoute(wlh());
+			r = execRoute(isUndefined(r) ? wlh() : r);
+			return routes[r] ? r : !!0;
+		};
+
+		HTML.route.refreshable = function (v) {
+			var rr = function (el, h) {
+				return (h = ('' + el.getAttribute('href')).match('#(.*)')) 
+					&& execRoute(h = h[1], 1);
+			};
+			setupHashChange();
+			if (isUndefined(v)) return !!refreshable;
+			if (refreshable != v && (refreshable = v)) {
+				var links = document.getElementsByTagName('a'), i, j, h, l, t, r;
+				for (i = 0; i < links.length; ++i) if (routes[rr(l = links[i])]) {
+					for (t = 1, j = 0; t && j < refreshEls.length; ++j)
+						if (refreshEls[j] === l) t = 0;
+					if (t) {
+						l.addEventListener('click', function () {
+							if (refreshable && (r = rr(this)) == execRoute(wlh(), 1) 
+								&& (r = routes[r])) r();
+						})
+					}
+				}
 			}
-			return false;
+			return HTML;
 		};
 	}
 	
