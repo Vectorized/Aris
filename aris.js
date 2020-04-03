@@ -204,9 +204,9 @@
 	"use strict";
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
-		module.exports = factory(global, true);
+		module.exports = factory(global, 1);
 	} else {
-		factory( global );
+		factory(global);
 	}
 
 } )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
@@ -412,26 +412,26 @@
 		var selectors = [], atrules = [];
 
 		var selectorsTests = {
-			':any-link': null,
-			'::backdrop': null,
-			':fullscreen': null,
+			':any-link': 0,
+			'::backdrop': 0,
+			':fullscreen': 0,
 			':full-screen': ':fullscreen',
 			//sigh
-			'::placeholder': null,
+			'::placeholder': 0,
 			':placeholder': ':placeholder-shown',
 			'::input-placeholder': '::placeholder',
 			':input-placeholder': ':placeholder-shown',
-			':read-only': null,
-			':read-write': null,
-			'::selection': null
+			':read-only': 0,
+			':read-write': 0,
+			'::selection': 0
 		};
 		var atrulesTests = {
 			'keyframes': 'name',
-			'viewport': null,
+			'viewport': 0,
 			'document': 'regexp(".")'
 		};
 
-		var selectorMap = {}, t;
+		var selectorMap = {}, t, test;
 		var style = head.appendChild(ce('style'));
 
 		var supported = function (selector) {
@@ -450,7 +450,7 @@
 		}
 
 		for (t in atrulesTests) {
-			var test = t + ' ' + (atrulesTests[t] || '');
+			test = t + ' ' + (atrulesTests[t] || '');
 			if(!supported('@' + test) && supported('@' + bestPrefix + test)) {
 				atrules.push(t);
 			}
@@ -620,7 +620,7 @@
 				xhr = new XMLHttpRequest();
 				xhr.onreadystatechange = fileReadyChecker(xhr, i, r, ctl);
 				s = r[2].indexOf('?') > -1 ? '&' : '?';
-				xhr.open('GET', r[2] + s + Math.random(), true);
+				xhr.open('GET', r[2] + s + Math.random(), 1);
 				xhr.responseType = 'text';
 				xhr.send();
 			}
@@ -682,6 +682,7 @@
 			}
 			return r;
 		}
+		if (n < 1) return '';
 		
 		for (i = 1; i < n; i++) if (context[i] !== null) {
 			obj = context[i];
@@ -698,7 +699,7 @@
 					v = obj[k];
 					t = lc(trim(k));
 					if (t == 'style' && !isObject(v)) {
-						v = '' + v;
+						v += '';
 						css = {};
 						while (mSub = cssPropRe.exec(v)) 
 							css[mSub[1]] = mSub[2];
@@ -718,7 +719,7 @@
 						}
 					}
 				}
-			} else content += '' + obj;
+			} else content += obj;
 		}
 		r = '<' + tag;
 		attrs = populateCaseVariations(attrs);
@@ -811,7 +812,7 @@
 	for (var c in svgCmds) 
 		HTML.SVG.Path[c] = svgPathAppender(c);
 	
-	var routes, savedRoutes, routesInited = false;
+	var routes, savedRoutes, routesInited = 0;
 
 	var hashComps = function (h) {
 		if (!isUndefined(h) && isArray(h)) {
@@ -858,7 +859,7 @@
 		if (routesInited) return;
 		routes = {};
 		savedRoutes = {};
-		routesInited = true;
+		routesInited = 1;
 		var comps = hashComps(wlh()), p = '', c, i;
 		for (i = 0; i < comps.length; ++i) {
 			if (i) p += '/';
