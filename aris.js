@@ -626,7 +626,7 @@
 				xhr.send();
 			}
 		}
-		if (ctl.n < 1) {
+		if (!ctl.n) {
 			setTimeout(function() {
 				if (isFunction(ctl.d))
 					ctl.d();
@@ -683,7 +683,7 @@
 			}
 			return r;
 		}
-		if (n < 1) return '';
+		if (!n) return '';
 
 		for (i = 1; i < n; i++) if (context[i] !== null) {
 			obj = context[i];
@@ -778,7 +778,7 @@
 	var svgCmds = 'mlhvcsqtaz';
 	svgCmds = toSet((svgCmds + uc(svgCmds)).split('').join(','));
 
-	HTML.SVG.Path = function () {
+	var svgPath = function () {
 		var attrs = {d:''}, path = ['path', attrs], a = arguments, i, p, k, 
 		P = function (command) {
 			return function() {
@@ -789,7 +789,7 @@
 			};
 		};
 		for (i = 0; i < a.length; i++) {
-			if (isObject(a[i])) {
+			if (isObject(p = a[i])) {
 				p = {};
 				for (k in a[i]) {
 					if (k == 'd') {
@@ -798,20 +798,20 @@
 						p[k] = a[i][k];
 					}
 				}
-				path.push(p);
-			} else {
-				path.push(a[i]);	
-			}
+			} 
+			path.push(p);
 		}
 		for (k in svgCmds) 
 			path[k] = P(k);
 		return path
 	};
 	var svgPathAppender = function (c) {
-		return function () { return HTML.SVG.Path()[c].apply(null, arguments); };
+		return function () { return svgPath()[c].apply(null, arguments); };
 	};
 	for (var c in svgCmds) 
-		HTML.SVG.Path[c] = svgPathAppender(c);
+		svgPath[c] = svgPathAppender(c);
+
+	HTML.SVG.Path = svgPath;
 	
 	var routes, savedRoutes, routesInited = 0, refreshable = 0, refreshEls = [];
 
@@ -861,22 +861,21 @@
 		routes = {};
 		savedRoutes = {};
 		routesInited = 1;
-		var comps = hashComps(wlh()), p = '', c, i;
+		var comps = hashComps(wlh()), p = '', c, i, storedHash, h;
 		for (i = 0; i < comps.length; ++i) {
 			if (i) p += '/';
 			c = comps[i];
 			savedRoutes[p] = c;
 			p += c;
 		}
-
 		if ('onhashchange' in window) { 
 			window.addEventListener('hashchange', function () {
 				execRoute(wlh());
 			});
 		} else { 
-			var storedHash = wlh();
+			storedHash = wlh();
 			setInterval(function () {
-				var h = wlh();
+				h = wlh();
 				if (h != storedHash) {
 					storedHash = h;
 					execRoute(storedHash);
@@ -888,7 +887,7 @@
 	if (!noBrowser) {
 		HTML.autoFixCSS = autoFixCSS;
 		HTML.load = load;
-		HTML.route = function (r, fn) {
+		var rx = function (r, fn) {
 			setupHashChange();
 			var h = hashComps(r).join('/');
 			if (!isUndefined(r) && isFunction(fn)) {
@@ -905,17 +904,17 @@
 			}
 		};
 
-		HTML.route.path = function (r) {
+		rx.path = function (r) {
 			return isUndefined(r) ? hashComps(wlh()).join('/') : execRoute(r, 1);
 		}
 
-		HTML.route.go = function (r) {
+		rx.go = function (r) {
 			setupHashChange();
 			r = execRoute(isUndefined(r) ? wlh() : r);
 			return routes[r] ? r : !!0;
 		};
 
-		HTML.route.refreshable = function (v) {
+		rx.refreshable = function (v) {
 			var rr = function (el, h) {
 				return (h = ('' + el.getAttribute('href')).match('#(.*)')) 
 					&& execRoute(h = h[1], 1);
@@ -924,8 +923,8 @@
 			if (isUndefined(v)) return !!refreshable;
 			if (refreshable != v && (refreshable = v)) {
 				var links = document.getElementsByTagName('a'), i, j, h, l, t, r;
-				for (i = 0; i < links.length; ++i) if (routes[rr(l = links[i])]) {
-					for (t = 1, j = 0; t && j < refreshEls.length; ++j)
+				for (i = links.length; i--; ) if (routes[rr(l = links[i])]) {
+					for (t = 1, j = refreshEls.length; t && j--; )
 						if (refreshEls[j] === l) t = 0;
 					if (t) {
 						l.addEventListener('click', function () {
@@ -937,6 +936,7 @@
 			}
 			return HTML;
 		};
+		HTML.route = rx;
 	}
 	
 	if (!noGlobal) {
@@ -944,7 +944,7 @@
 			window.HTML = HTML;
 		var aris = HTML;
 		aris.svg = aris.SVG;
-		aris.svg.path = aris.svg.path;
+		aris.svg.path = aris.svg.Path;
 		window.aris = aris;
 	}
 	return HTML;
