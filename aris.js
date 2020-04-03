@@ -522,10 +522,11 @@
 
 	var fixCSSRelUrls = function (url, css) {
 		url = trim(url);
+		var chopLastRe = /\/[^/]*$/;
 		if (url[0] != '/') {
-			url = window.location.pathname.split('/').slice(0,-1).join('/') + '/' + url;
+			url = window.location.pathname.replace(chopLastRe, '') + '/' + url;
 		}
-		url = url.split('/').slice(0,-1).join('/');
+		url = url.replace(chopLastRe, '');
 
 		return css.replace(cssUrlRe, function (x, g) {
 			var p = g.indexOf('//');
@@ -683,7 +684,7 @@
 			return r;
 		}
 		if (n < 1) return '';
-		
+
 		for (i = 1; i < n; i++) if (context[i] !== null) {
 			obj = context[i];
 			if (isArray(obj)) {
