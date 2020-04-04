@@ -813,7 +813,7 @@
 
 	HTML.SVG.Path = svgPath;
 	
-	var routes, savedRoutes, routesInited = 0, refreshable = 0, refreshEls = [];
+	var routes = {}, savedRoutes = {}, routesInited = 0, refreshable = 0;
 
 	var hashComps = function (h) {
 		if (!isUndefined(h) && isArray(h)) {
@@ -858,18 +858,28 @@
 
 	var setupHashChange = function () {
 		if (routesInited) return;
-		routes = {};
-		savedRoutes = {};
 		routesInited = 1;
-		var comps = hashComps(wlh()), p = '', c, i, storedHash, h;
+		var comps = hashComps(wlh()), p = '', t, r,
+		c, i, storedHash, h, ael = 'addEventListener', 
+		clickCallback = function (e) {
+			if (refreshable) 
+				for (t = e.target; t; t = t.parentElement) 
+					if (uc(t.tagName)=='A' && 
+						(r=t.getAttribute('href')) && 
+						(r=(''+r).match('#(.*)')) && 
+						(r=execRoute(r[1],1)) == execRoute(wlh(),1) && 
+						(r=routes[r])) { r(); return; }
+			
+		};
 		for (i = 0; i < comps.length; ++i) {
 			if (i) p += '/';
 			c = comps[i];
 			savedRoutes[p] = c;
 			p += c;
 		}
+
 		if ('onhashchange' in window) { 
-			window.addEventListener('hashchange', function () {
+			window[ael]('hashchange', function () {
 				execRoute(wlh());
 			});
 		} else { 
@@ -881,7 +891,12 @@
 					execRoute(storedHash);
 				}
 			}, 100);
-		}	
+		}
+		if (document[ael]) {
+			document[ael]('click', clickCallback, false);
+		} else {
+			document.attachEvent('onclick', clickCallback);
+		}
 	};
 
 	if (!noBrowser) {
@@ -915,25 +930,9 @@
 		};
 
 		rx.refreshable = function (v) {
-			var rr = function (el, h) {
-				return (h = ('' + el.getAttribute('href')).match('#(.*)')) 
-					&& execRoute(h = h[1], 1);
-			};
 			setupHashChange();
 			if (isUndefined(v)) return !!refreshable;
-			if (refreshable != v && (refreshable = v)) {
-				var links = document.getElementsByTagName('a'), i, j, h, l, t, r;
-				for (i = links.length; i--; ) if (routes[rr(l = links[i])]) {
-					for (t = 1, j = refreshEls.length; t && j--; )
-						if (refreshEls[j] === l) t = 0;
-					if (t) {
-						l.addEventListener('click', function () {
-							if (refreshable && (r = rr(this)) == execRoute(wlh(), 1) 
-								&& (r = routes[r])) r();
-						})
-					}
-				}
-			}
+			refreshable = !!v;
 			return HTML;
 		};
 		HTML.route = rx;
