@@ -166,6 +166,18 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
   HTML boolean attributes are specified as false by totally omitting it,
   as such, we created a helper function to make this easier to write.
 
+### HTML Output Key Order and Hash
+
+- `HTML(['a', {href: 'x.com', id: 'link'}, 'x'])`    =>    `<a href="x.com" id="link">x</a>`    
+  `HTML(['a', 'x', {id: 'link', href: 'x.com'}])`    =>    `<a href="x.com" id="link">x</a>`    
+  The HTML output is deterministic, with attribute keys sorted in ascending order.
+
+- `HTML.hash(['a', {href: 'x.com', id: 'link'}, 'x'])`    =>    `841135124`    
+  `HTML.hash(['a', 'x', {id: 'link', href: 'x.com'}])`    =>    `841135124`    
+  `HTML.hash(HTML(['a', 'x', {id: 'link', href: 'x.com'}]))`    =>    `841135124`    
+  `HTML.hash('some string')`    =>    `-984100687`    
+  HTML contexts and strings can be hashed to 32-bit integers for compact storage and quick comparison.
+
 ### Lazy Loading
 
 - `HTML.load(file0, file1, ...).done(fn)`  
