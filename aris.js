@@ -236,8 +236,8 @@
 	var stringTrimRe = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 	var splitWordsRe = /(?:(?:^|[A-Z])[a-z]+|[0-9]+|[A-Za-z]+)/g;
 
-	var hashPopRe = /((^|\/)[^\/]+)[\/]*$/;
-	var hashResolveRe = /(^|\/)#|\/\.?(?=(\/|$))|\/+$|((?![.]{1,2})[^\/])+\/\.\.(\/|$)/;
+	var hashPopRe = /(?:(^\/)|\/)[^\/]+[\/]*$/; // $1
+	var hashResolveRe = /^#\/?|(\/)(?:\.?\/)+|(?:[^\/])+\/\.\.(?:\/|$)|([^\^])\/+$/;
 	var hashCompsRe = /(?:(^|\/)(:?)([^\/]+))/g;
 	var locationPathPopRe = /((^|\/)[^\/]*)$/;
 	var htmlTagRe = /^[\w]+$/;
@@ -844,11 +844,12 @@
 	var hashResolve = function (h) {
 		for (var p, t = 1; t; ) {
 			p = h; 
-			h = h.replace(hashResolveRe, '');
+			h = h.replace(hashResolveRe, '$1$2');
 			t = p != h;
 		}
 		return h;
 	};
+	//HTML.hashResolve = hashResolve;
 	var execRoute = function (h, s) {
 		var p = '', j, c, m, a = hashResolve(h);
 		while (m = hashCompsRe.exec(a)) {
@@ -859,7 +860,7 @@
 			if (!s) savedRoutes[p] = c;
 			p += c;
 		}
-		for (j = p; j; j = j.replace(hashPopRe,'')) {
+		for (j = p; j; j = j.replace(hashPopRe, '$1')) {
 			if (routes[j]) {
 				p = j;
 				j = '';
