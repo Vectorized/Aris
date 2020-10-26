@@ -35,8 +35,8 @@ Imagine you want to write the following shit:
 
 ```javascript
 var dropdownHTML = '';
-for (var i = 0; i < dropdown.values.length; ++i) {
-  dropdownHTML += '<a class="dropdown-item">' + dropdown.values[i] + '</a>';
+for (var i = 0; i < dropdownValues.length; ++i) {
+  dropdownHTML += '<a class="dropdown-item">' + dropdownValues[i] + '</a>';
 }
 el.innerHTML = '<div class="dropdown">' +
   '<button class="btn dropdown-toggle"' +
@@ -66,7 +66,7 @@ el.innerHTML = HTML(['div', {class: 'dropdown'},
     ariaExpanded: false
   }],
   ['div', {class: 'dropdown-menu', ariaLabelledby: 'dropdownMenuButton'},
-    [dropdown.values, function (x) { 
+    [dropdownValues, function (x) { 
       return ['a', {class: 'dropdown-item'}, x]
     }]
   ]

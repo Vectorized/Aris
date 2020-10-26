@@ -237,7 +237,7 @@
 	var splitWordsRe = /(?:(?:^|[A-Z])[a-z]+|[0-9]+|[A-Za-z]+)/g;
 
 	var hashPopRe = /(?:(^\/)|\/)[^\/]+[\/]*$/; // $1
-	var hashResolveRe = /^#\/?|(\/)(?:\.?\/)+|(?:[^\/])+\/\.\.(?:\/|$)|([^\^])\/+$/;
+	var hashResolveRe = /^#\/?|(\/)(?:\.?\/)+|(?:(?!\.\.?)[^\/])+\/\.\.(?:\/|$)|([^\^])\/+$/;
 	var hashCompsRe = /(?:(^|\/)(:?)([^\/]+))/g;
 	var locationPathPopRe = /((^|\/)[^\/]*)$/;
 	var htmlTagRe = /^[\w]+$/;
@@ -664,14 +664,14 @@
 		return {r: r, i: o - 1};
 	};
 
+	var isUndefinedOrNull = function (x) { return isUndefined(x) || x === null; };
+
 	var HTML = function(context) {
 
-		var n = context.length;
+		if (isUndefinedOrNull(context)) return '';
 
-		if (!n || isUndefined(context) || context === null) return '';
-
-		var a = arguments, r, i, obj, k, k2, t, v, css, mSub, j, mn, sk, skk,
-		tag = context[0] + '', content = '', attrs = {};
+		var a = arguments, r, i, obj, k, k2, t, v, css, mSub, j, mn, sk, skk, 
+		content = '', attrs = {};
 
 		if (a.length > 1) {
 			for (content = [], i = 0; i < a.length; ++i)
@@ -680,6 +680,10 @@
 		}
 		
 		if (!isArray(context)) return '' + context;
+		
+		var n = context.length, tag = context[0] + '';
+
+		if (!n) return '';
 
 		if (n && (isArray(context[0]) || context[0] === null || !tag.match(htmlTagRe))) {
 			for (r = '', i = 0; i < n; i++) {
@@ -730,7 +734,9 @@
 						}
 					}
 				}
-			} else content += obj;
+			} else if (!isUndefinedOrNull(obj)) {
+				content += obj;
+			}
 		}
 		r = '<' + tag;
 		attrs = populateCaseVariations(attrs);
