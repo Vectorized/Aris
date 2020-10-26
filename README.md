@@ -66,9 +66,9 @@ el.innerHTML = HTML(['div', {class: 'dropdown'},
     ariaExpanded: false
   }],
   ['div', {class: 'dropdown-menu', ariaLabelledby: 'dropdownMenuButton'},
-    [dropdownValues, function (x) { 
+    dropdownValues, function (x) { 
       return ['a', {class: 'dropdown-item'}, x]
-    }]
+    }
   ]
 ]);
 ```
