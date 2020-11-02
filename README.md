@@ -14,6 +14,10 @@ If you know JS and HTML, you already know Aris.
 
 Or you can clone/download this github.
 
+## Converter
+
+[Link to converter.](https://bkys.io/aris/converter.html)
+
 ## Overview
 
 Imagine you want to write the following shit:
