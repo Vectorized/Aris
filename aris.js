@@ -183,10 +183,10 @@
  *   HTML(['svg', {xmlns:'http://www.w3.org/2000/svg',
  *     width:'30px', height:'30px', viewBox:'0 0 30 30'},
  *       ['circle', {class:'frame', cx:15, cy:15, r:12}],
- *       ['path' {class:'hand hour', d:'M15,15 L20,15'}],
- *       ['path' {class:'hand minute', d:'M15,15 L15,2'}],
- *       ['path' {d:'M0,0 L1,1'}],
- *       ['path' {d:'M0,0 L1,1'}],
+ *       ['path', {class:'hand hour', d:'M15,15 L20,15'}],
+ *       ['path', {class:'hand minute', d:'M15,15 L15,2'}],
+ *       ['path', {d:'M0,0 L1,1'}],
+ *       ['path', {d:'M0,0 L1,1'}],
  *   ])
  *       =>
  *         
@@ -670,7 +670,7 @@
 
 		if (isUndefinedOrNull(context)) return '';
 
-		var a = arguments, r, i, obj, k, k2, t, v, css, mSub, j, mn, sk, skk, 
+		var a = arguments, r, i, obj, k, k2, t, v, css, mSub, j, mn, sk, skk, f,
 		content = '', attrs = {};
 
 		if (a.length > 1) {
@@ -745,6 +745,7 @@
 		for (i = 0; i < sk.length; ++i) {
 			k = sk[i];
 			t = '';
+			f = 1;
 			if (isObject(attrs[k])) { // css case
 				css = autoFixCSS(attrs[k]);
 				skk = v(css).sort();
@@ -752,10 +753,19 @@
 					k2 = skk[j]
 					t += k2 + ':' + css[k2] + ';';
 				}
+			} else if (isArray(attrs[k])) {
+				for (j = 0; f && j < attrs[k].length; ++j) {
+					if (attrs[k][j]) {
+						r += ' ' + k;
+						f = 0;
+					}
+				}
+				f = 0;
 			} else {
 				t += attrs[k];
 			}
-			r += ' ' + k + '="' + HTML.escape(t) + '"';
+			if (f)
+				r += ' ' + k + '="' + HTML.escape(t) + '"';
 		}
 		
 		if (emptyTags[trim(tag).toLowerCase()] && !content)

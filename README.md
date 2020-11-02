@@ -6,11 +6,15 @@ If you know JS and HTML, you already know Aris.
 
 ## Usage 
 
-**browser:**  
-```<script src="https://cdn.jsdelivr.net/npm/aris/aris.min.js"></script>```
+**Browser / CDN:**  
+```html
+<script src="https://cdn.jsdelivr.net/npm/aris/aris.min.js"></script>
+```
 
-**npm:**  
-```npm i aris```
+**NPM:**  
+```bash
+npm i aris
+```
 
 Or you can clone/download this github.
 
@@ -28,12 +32,14 @@ for (var i = 0; i < dropdownValues.length; ++i) {
   dropdownHTML += '<a class="dropdown-item">' + dropdownValues[i] + '</a>';
 }
 el.innerHTML = '<div class="dropdown">' +
-  '<button class="btn dropdown-toggle"' +
-  'type="button"' +
-  'id="dropdownMenuButton"' +
-  'data-toggle="dropdown"' +
-  'aria-haspopup="true"' +
-  'aria-expanded="false">' +
+  '<button class="btn dropdown-toggle" ' +
+  'type="button" ' +
+  'id="dropdownMenuButton" ' +
+  'data-toggle="dropdown" ' +
+  'aria-haspopup="true" ' +
+  'aria-expanded="false" ' +
+  (dropdownDisabled ? 'disabled' : '') +
+  '>' +
     dropdown.text +
   '</button>' +
   '<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">' +
@@ -52,7 +58,8 @@ el.innerHTML = HTML(['div', {class: 'dropdown'},
     id: 'dropdownMenuButton', 
     dataToggle: 'dropdown', 
     ariaHaspopup: true, 
-    ariaExpanded: false
+    ariaExpanded: false,
+    disabled: [dropdownDisabled]
   }],
   ['div', {class: 'dropdown-menu', ariaLabelledby: 'dropdownMenuButton'},
     dropdownValues, function (x) { 
@@ -98,7 +105,7 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
 Explanation (skip if you can figure out from the example):
 
 - If the starting element is a string, it is treated as a tag name.   
-     `['div', 'Text']`    =>    `<div>Text</div>`
+     `['div', 'Text']`    &#8594;    `<div>Text</div>`
 
 - Attributes are added via objects.   
   The object can be anywhere in the array except for the starting element.   
@@ -110,30 +117,30 @@ Explanation (skip if you can figure out from the example):
 - Attributes can be defined via camelCase or snake_case.   
   They will automatically converted to camelCase, kebab-case and snake_case.  
   This is so that you can avoid using quotes on the keys.  
-     `{ariaLabel: "x"}`    =>    `aria-label="x"`
+     `{ariaLabel: "x"}`    &#8594;    `aria-label="x"`
   
 - If the starting element is an array, the contents of the entire  
   array will be converted to HTML and joined.   
-     `[['div', 0], ['div', 1]]`    =>    `<div>0</div><div>1</div>`
+     `[['div', 0], ['div', 1]]`    &#8594;    `<div>0</div><div>1</div>`
      
 - Inline CSS can be defined via objects or strings.  
   They will be combined in sequential order.  
   Repeated CSS properties will be replaced.  
   The CSS will be **auto-magically** prefixed.   
   For numerical properties, `px` will be automatically added if where applicable. (similar to jQuery).  
-     `['div', {style: {opacity: 0, width: 2}}, 'x', {style: "opacity: 1; filter: grayscale(100%)"}]`    =>    
+     `['div', {style: {opacity: 0, width: 2}}, 'x', {style: "opacity: 1; filter: grayscale(100%)"}]`    &#8594;    
      `<div style="opacity: 1; width: 2px; -webkit-filter: grayscale(100%); filter: grayscale(100%)">x</div>`
 
 - Classes are joined with spaces if repeated in an object.  
-     `['div', {class: 'a'}, 'x', {class: 'b'}]`    =>    `<div class="a b">x</div>`
+     `['div', {class: 'a'}, 'x', {class: 'b'}]`    &#8594;    `<div class="a b">x</div>`
 
 - Other attributes are replaced if repeated in an object.  
-     `['div', {id: 'a'}, 'x', {id: 'b'}]`    =>    `<div id="b">x</div>`
+     `['div', {id: 'a'}, 'x', {id: 'b'}]`    &#8594;    `<div id="b">x</div>`
 
 - If an element is an array, and the next element is a function,   
   the array will be automatically mapped to the function.   
-     `['div', [1,2,3], function (x) { return x*2 }]`    =>    `<div>246</div>`   
-     `['div', [[1,2,3], function (x) { return x*2 }] ]`    =>    `<div>246</div>`
+     `['div', [1,2,3], function (x) { return x*2 }]`    &#8594;    `<div>246</div>`   
+     `['div', [[1,2,3], function (x) { return x*2 }] ]`    &#8594;    `<div>246</div>`
 
 ## Other Functions
 
@@ -147,23 +154,21 @@ Explanation (skip if you can figure out from the example):
 
 ### HTML Boolean Attributes
 
-- `['button', {disabled: true ? '' : null}]`    =>    `<button disabled=''></button>`    
-  `['button', {disabled: false ? '' : null}]`    =>    `<button></button>`    
-  To denote the presence of a boolean attribute, set the value to an empty string.  
-  You can also set it to the name of the attribute.  
-  See: https://www.w3.org/TR/2008/WD-html5-20080610/semantics.html  
-  To omitt it, set the value to null.  
+- `['button', {disabled: [true]}]`    &#8594;    `<button disabled></button>`    
+  `['button', {disabled: [false]}]`    &#8594;    `<button></button>`    
+  For a boolean attribute, wrap it in an array.  
+  A truthy value denotes its presence.
 
 ### HTML Output Key Order and Hash
 
-- `HTML(['a', {href: 'x.com', id: 'link'}, 'x'])`    =>    `<a href="x.com" id="link">x</a>`    
-  `HTML(['a', 'x', {id: 'link', href: 'x.com'}])`    =>    `<a href="x.com" id="link">x</a>`    
+- `HTML(['a', {href: 'x.com', id: 'link'}, 'x'])`    &#8594;    `<a href="x.com" id="link">x</a>`    
+  `HTML(['a', 'x', {id: 'link', href: 'x.com'}])`    &#8594;    `<a href="x.com" id="link">x</a>`    
   The HTML output is deterministic, with attribute keys sorted in ascending order.
 
-- `HTML.hash(['a', {href: 'x.com', id: 'link'}, 'x'])`    =>    `841135124`    
-  `HTML.hash(['a', 'x', {id: 'link', href: 'x.com'}])`    =>    `841135124`    
-  `HTML.hash(HTML(['a', 'x', {id: 'link', href: 'x.com'}]))`    =>    `841135124`    
-  `HTML.hash('some string')`    =>    `-984100687`    
+- `HTML.hash(['a', {href: 'x.com', id: 'link'}, 'x'])`    &#8594;    `841135124`    
+  `HTML.hash(['a', 'x', {id: 'link', href: 'x.com'}])`    &#8594;    `841135124`    
+  `HTML.hash(HTML(['a', 'x', {id: 'link', href: 'x.com'}]))`    &#8594;    `841135124`    
+  `HTML.hash('some string')`    &#8594;    `-984100687`    
   HTML contexts and strings can be hashed to 32-bit integers for compact storage and quick comparison.
 
 ### SVG
@@ -308,9 +313,9 @@ If you have any suggestions, questions, or bug reports, raise an issue.
   Hence, have choosen to settle with another short but memorable name! 
   
   If there is a namespace collision, you can use `aris` instead of `HTML`.  
-  `HTML` => `aris`  
-  `HTML.SVG` => `aris.svg`  
-  `HTML.SVG.Path` => `aris.svg.path`  
+  `HTML` &#8594; `aris`  
+  `HTML.SVG` &#8594; `aris.svg`  
+  `HTML.SVG.Path` &#8594; `aris.svg.path`  
 
 ## License
 
