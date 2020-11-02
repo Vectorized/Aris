@@ -1,35 +1,20 @@
 # Aris - Write HTML in JS easily.
 
-Aris is a simple library \(\< 5kb minified + gzipped\) that:
+Aris is a simple library \(\< 5kb minified + gzipped\) that allows you to write HTML in JS easily.
 
-- Allows you to write HTML in JS in a clean, powerful and extensible manner   
-  \(contrary to what many people believe is impossible\).
-- Lazily load JS and CSS files \(it also auto-prefixes your CSS\).  
-- Does routing with page anchor tags (hash routing, e.g. `href="#path/to/page"`) 
+If you know JS and HTML, you already know Aris. 
 
-**Just these 3 functions alone** will allow you to easily build frontend web-apps   
-(e.g. Single page applications, Progressive web apps) that are [performant and scalable](#Advantages).  
+## Usage 
 
-Aris is so simple that its whole documentation is this README.   
+**browser:**  
+```<script src="https://cdn.jsdelivr.net/npm/aris@1.0.7/aris.min.js"></script>```
 
-## Download 
+**npm:**  
+```npm i aris```
 
-Just copy and paste the `aris.min.js` from this repository.  
-If you want to read the entire file (it's less than 1k lines), you can look at `aris.js`. 
+Or you can clone/download this github.
 
-## The Problem  
-
-Writing HTML in JS is a traditionally *messy* experience.  
-
-You'll have to carefully fiddle with quotes, double quotes, string concatenation, escaping characters, etc.  
-This breaks syntax highlighting, causes mistakes, and a LOT of stress.   
-
-It is little wonder why most people resort to backend templating solutions, or use frontend templating frameworks/libraries/transpilers.   
-
-Unfortunately, these solutions are not good enough (even JSX).   
-Their are usually either too complex, clunky, slow, obscure, incomplete, bloated, or inflexible. 
-
-## The Solution
+## Overview
 
 Imagine you want to write the following shit:
 
@@ -75,11 +60,6 @@ el.innerHTML = HTML(['div', {class: 'dropdown'},
 
 Wow! Such syntax. Much clean.  
 
-Notice how the HTML is being expressed in an intermediate form with native JS objects and arrays.  
-\(We call this intermediate form a HTML *context*\).
-
-This simple change makes **all** the difference, and opens up [a whole new world of possibilities](#Advantages).  
-
 ## Functions
 
 ### HTML
@@ -110,6 +90,8 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
     <span>0</span><span>1</span><span>2</span>
 </div>
 ```
+
+Explanation (skip if you can figure out from the example):
 
 - If the starting element is a string, it is treated as a tag name.   
      `['div', 'Text']`    =>    `<div>Text</div>`
@@ -178,46 +160,9 @@ HTML(["div", {id: "y", class: "a b", style: {color: "red"}, ariaLabel: "x"},
   `HTML.hash('some string')`    =>    `-984100687`    
   HTML contexts and strings can be hashed to 32-bit integers for compact storage and quick comparison.
 
-### Lazy Loading
+### SVG
 
-- `HTML.load(file0, file1, ...).done(fn)`  
-  Loads (.js, .css) files, then execute the done function `fn` (optionally).   
-  The files are downloaded asynchronously in parallel, but attached to the webpage in the specified order.   
-  Each file will be only loaded **once**.   
-  The done function is **always executed once per load call**,   
-  *irregardless* of whether the files have been loaded previously.
-
-  The files are treated accordingly with their file extension.  
-  To force a file to be treated as a JS or CSS file, prefix the url with (`js:` or `css:`):  
-  `js: js/main` (whitespace around the `:` is ignored)
-
-  CSS files will be **auto-magically** prefixed.
-
-  Lazily loaded JS can be [debugged easily](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Debug_eval_sources) in modern browsers,  
-  as we auto-prepend the sourceURL directive to the JS files.
-
-### Hash Routing
-
-- `HTML.route("#path/to/page/anchor", fn)`  
-  Attaches the function `fn` to `#path/to/page/anchor`.  
-
-- `HTML.route.go("#path/to/page/anchor")`  
-  Executes the function attached to `#path/to/page/anchor`.  
-
-- `HTML.route.go("#path/to/page/:anchor")`  
-  Attemps to execute the function attached to the path.   
-  The prefix `:` on the path component denotes that it is is default option.  
-  If the visitor has visited `#path/to/page/one`, or if the address bar points to `#path/to/page/one`, it will execute the function attached to `#path/to/page/one`.  
-  Otherwise, it will execute the function attached to `#path/to/page/anchor`.  
-
-- `HTML.route.go("#:path/:to/:page")`  
-  You can prefix any path component with ":" to mark it as the default option.  
-
-- `HTML.route.go()`  
-  Attempts to execute the function attached to the path in the address bar.   
-  (i.e. `window.location.hash`)  
-
-### SVG (for the artsy coders)
+For the artsy coders.
 
 - `HTML.SVG(width, height, ...context)`  
   Creates a SVG string, with common boilerplate attributes automatically-filled.  
@@ -271,61 +216,83 @@ HTML(['svg', {xmlns: 'http://www.w3.org/2000/svg',
 
 You can even use this to create complex animated SVGs. ;)
 
+### Lazy Loading
+
+This is just a bonus feature to make making single-page-apps easier.   
+
+- `HTML.load(file0, file1, ...).done(fn)`  
+  Loads (.js, .css) files, then execute the done function `fn` (optionally).   
+  The files are downloaded asynchronously in parallel, but attached to the webpage in the specified order.   
+  Each file will be only loaded **once**.   
+  The done function is **always executed once per load call**,   
+  *irregardless* of whether the files have been loaded previously.
+
+  The files are treated accordingly with their file extension.  
+  To force a file to be treated as a JS or CSS file, prefix the url with (`js:` or `css:`):  
+  `js: js/main` (whitespace around the `:` is ignored)
+
+  CSS files will be **auto-magically** prefixed.
+
+  Lazily loaded JS can be [debugged easily](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Debug_eval_sources) in modern browsers,  
+  as we auto-prepend the sourceURL directive to the JS files.
+
+### Hash Routing
+
+This is just a bonus feature to make making single-page-apps easier.   
+
+- `HTML.route("#path/to/page/anchor", fn)`  
+  Attaches the function `fn` to `#path/to/page/anchor`.  
+
+- `HTML.route.go("#path/to/page/anchor")`  
+  Executes the function attached to `#path/to/page/anchor`.  
+
+- `HTML.route.go("#path/to/page/:anchor")`  
+  Attemps to execute the function attached to the path.   
+  The prefix `:` on the path component denotes that it is is default option.  
+  If the visitor has visited `#path/to/page/one`, or if the address bar points to `#path/to/page/one`, it will execute the function attached to `#path/to/page/one`.  
+  Otherwise, it will execute the function attached to `#path/to/page/anchor`.  
+
+- `HTML.route.go("#:path/:to/:page")`  
+  You can prefix any path component with ":" to mark it as the default option.  
+
+- `HTML.route.go()`  
+  Attempts to execute the function attached to the path in the address bar.   
+  (i.e. `window.location.hash`)  
+
 ## Why use Aris? 
 
-Just use Aris. Seriously.   
+Aris saves you time, effort, and brain space.    
 
-Aris will save you precious time, effort, and brain space.    
-
-Your code will be shorter, cleaner, and more performant.   
+If you think something else is better, feel free to use them and do your own comparisons.   
 
 ## Advantages
 
 - Just plain old JS.    
 - Zero dependencies.    
-- No tooling needed.    
-- Easy. Learn once, use forever.   
+- Zero tooling.    
+- Learn once, use forever.   
 - Automagic CSS prefixing.    
-- Fast.
+- Fast.  
 
 ## Performance
 
-Aris performs with *so* little overhead, it's *as if* you have written that HTML and CSS in plain text.  
+Very fast. If anything lags, it is probably something else.  
 
 ## Support
 
-Aris is actively maintained and constantly tested against all major browsers.  
-If you have any suggestions, questions, or bug reports, we will be very glad to help.  
+Aris is actively maintained and constantly tested against all major browsers (even IE).   
+
+If you have any suggestions, questions, or bug reports, raise an issue.  
 
 ## FAQ
 
 - **How does Aris help me create high-performance user interfaces?**
 
-  Our approach to speed is simply to allow easy creation of complex HTML, with minimal overhead.  
-  Instead of changing the contents of many DOM elements, one after another,   
-  you will just create and set the combined HTML in one go.
+  Aris is just plain old Javascript, all HTML generation is close to the metal.  
 
-  This minimizes reflows.   
+  Use Aris to generate complex HTML and update the only the elements you need.   
 
-  If you know what you are doing, this will be faster than DOM-diffing. 
-
-  Because Aris is just plain old Javascript, all HTML creation is extremely close to the metal,  
-  fully leveraging the native optimized compiled machine code of the JS engine.
-
-  This is much faster than using templating systems based on regex.
-
-- **Why another JS library/framework? How does this compare to \<insert name here\>?**
-
-  The existing solutions in the JS community are simply **not** good enough.  
-  Many of them require you to call functions everywhere and remember to provide the correct arguments in order.  
-  Many of them pollute the namespace of short variable names unnecessarily.  
-  Many of them require tooling to work well.  
-  Many of them are just not good enough.   
-  
-  Just use Aris and you will quickly understand why.  
-
-  We adopt a no-compromise approach for Aris. Every part is meticulously and purposefully crafted.    
-  We aim for a minimal code size, but not at the cost of completeness and ease of use.  
+  This minimizes reflows and you will have a snappy user interface.
   
 - **What does Aris stands for?**
   
