@@ -1,8 +1,10 @@
+[![Aris](https://raw.githubusercontent.com/Vectorized/Aris/master/logo.png)](https://github.com/Vectorized/Aris "Aris")
+
 # Aris - Write HTML in JS easily.
 
 Aris is a simple library \(\< 5kb minified + gzipped\) that allows you to write HTML in JS easily.
 
-If you know JS and HTML, you already know Aris. 
+If you know HTML and JS, you already know Aris. 
 
 ## Usage 
 
@@ -156,8 +158,7 @@ Explanation (skip if you can figure out from the example):
 
 - `['button', {disabled: [true]}]`    &#8594;    `<button disabled></button>`    
   `['button', {disabled: [false]}]`    &#8594;    `<button></button>`    
-  For a boolean attribute, wrap it in an array.  
-  A truthy value denotes its presence.
+  For a boolean attribute, wrap it in an array. A truthy value denotes its presence.
 
 ### HTML Output Key Order and Hash
 
@@ -248,19 +249,19 @@ This is just a bonus feature to make making single-page-apps easier.
 
 This is just a bonus feature to make making single-page-apps easier.   
 
-- `HTML.route("#path/to/page/anchor", fn)`  
+- `HTML.route("path/to/page/anchor", fn)`  
   Attaches the function `fn` to `#path/to/page/anchor`.  
 
-- `HTML.route.go("#path/to/page/anchor")`  
+- `HTML.route.go("path/to/page/anchor")`  
   Executes the function attached to `#path/to/page/anchor`.  
 
-- `HTML.route.go("#path/to/page/:anchor")`  
+- `HTML.route.go("path/to/page/:anchor")`  
   Attemps to execute the function attached to the path.   
   The prefix `:` on the path component denotes that it is is default option.  
   If the visitor has visited `#path/to/page/one`, or if the address bar points to `#path/to/page/one`, it will execute the function attached to `#path/to/page/one`.  
   Otherwise, it will execute the function attached to `#path/to/page/anchor`.  
 
-- `HTML.route.go("#:path/:to/:page")`  
+- `HTML.route.go(":path/:to/:page")`  
   You can prefix any path component with ":" to mark it as the default option.  
 
 - `HTML.route.go()`  
