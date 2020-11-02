@@ -307,7 +307,7 @@ $(function () {
     var $convert   = $form.find("[name='convert']");
     var $copy      = $form.find("[name='copy']");
 
-    var hasResults = 0, defaultSpacing = 4, prevSpacing = defaultSpacing;
+    var convertedCtx, defaultSpacing = 4, prevSpacing = defaultSpacing;
 
     $spacing.val(defaultSpacing).change(function () {
         var v = parseInt($spacing.val());
@@ -320,15 +320,15 @@ $(function () {
         var html = $html.val(), isEmpty = html == "";
         if (!isUpdate) {
             $html.toggleClass('is-invalid', isEmpty);
-        }
-        if (!isEmpty || (isUpdate && hasResults)) {
-            var ctx = arisConverter.htmlToCtx(html), options = {
-                indent: $indent.is(':checked') ? '\t' : $spacing.val()
-            };
-            hasResults = 1;
+            if (!isEmpty)
+                convertedCtx = arisConverter.htmlToCtx(html);
+        } 
+        if (convertedCtx) {
             $copy.prop('disabled', 0);    
             $converted.removeClass('is-valid').prop('readonly', 0)
-            .val(arisConverter.stringify(ctx, options));
+            .val(arisConverter.stringify(convertedCtx, {
+                indent: $indent.is(':checked') ? '\t' : $spacing.val()
+            }));
         }
     };
 
@@ -336,10 +336,11 @@ $(function () {
         $copy.prop('disabled', $converted.val() == '');
     });
 
-    $convert.click(function () { convertAndShow(0) });
+    $convert.click(function () { 
+        convertAndShow(0); 
+    });
 
     $html.change(function () {
-        hasResults = 0;
         $html.removeClass('is-invalid');
     });
 
@@ -348,7 +349,9 @@ $(function () {
         convertAndShow(1);
     });
 
-    $spacing.change(function () { convertAndShow(1) });
+    $spacing.change(function () { 
+        convertAndShow(1); 
+    });
 
     var copyDoneTimeout = 0;
     $copy.click(function () {
