@@ -21,8 +21,8 @@ $(function () {
         var isArray = isT('Array');
 
         self.htmlToCtx = function (html) {
-            var tagRe = /<(\/)?(\w+)((\s+\w+(\s*=\s*("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^'">\s]+))?)+\s*|\s*)(\/)?>/g;
-            var attrRe = /(\w+)(\s*=\s*("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^'">\s]+))?/g;
+            var tagRe = /<(\/)?([^\s<>"'`=]+)((\s+[^\s<>"'`=]+(\s*=\s*("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^'">\s]+))?)+\s*|\s*)(\/)?>/g;
+            var attrRe = /([^\s<>"'`=]+)(\s*=\s*("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^'">\s]+))?/g;
             var voidsRe = /area|base|br|col|command|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr/;
             var stripWsRe = /^\s*|\s*$|([\s])+/g;
 
