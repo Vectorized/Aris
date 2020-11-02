@@ -147,10 +147,12 @@ Explanation (skip if you can figure out from the example):
 
 ### HTML Boolean Attributes
 
-- `HTML.bool("checked", true)`    =>    `{"checked": "checked"}`    
-  `HTML.bool("checked", false)`    =>    `""`   
-  HTML boolean attributes are specified as false by totally omitting it,
-  as such, we created a helper function to make this easier to write.
+- `['button', {disabled: true ? '' : null}]`    =>    `<button disabled=''></button>`    
+  `['button', {disabled: false ? '' : null}]`    =>    `<button></button>`    
+  To denote the presence of a boolean attribute, set the value to an empty string.  
+  You can also set it to the name of the attribute.  
+  See: https://www.w3.org/TR/2008/WD-html5-20080610/semantics.html  
+  To omitt it, set the value to null.  
 
 ### HTML Output Key Order and Hash
 
@@ -185,8 +187,7 @@ HTML(SVG(30, 30,
    P({class: 'hand hour'}).M(15,15).L(20,15),
    P({class: 'hand minute'}).M(15,15).L(15,2),
    P().M(0,0).L(1,1),
-   P.M(0,0).L(1,1),
-   ['text', {x: 0, y: 0}, 'Path can be also be called without args!']
+   P.M(0,0).L(1,1), // Path can be also be called without args!
 ))
 ```
 
@@ -196,11 +197,10 @@ HTML(SVG(30, 30,
 HTML(['svg', {xmlns: 'http://www.w3.org/2000/svg',
   width: '30px', height: '30px', viewBox: '0 0 30 30'},
     ['circle', {class: 'frame', cx: 15, cy: 15, r: 12}],
-    ['path' {class: 'hand hour', d: 'M15,15 L20,15'}],
-    ['path' {class: 'hand minute', d: 'M15,15 L15,2'}],
-    ['path' {d: 'M0,0 L1,1'}],
-    ['path' {d: 'M0,0 L1,1'}],
-    ['text', {x: 0, y: 0}, 'Path can be also be called without args!']
+    ['path', {class: 'hand hour', d: 'M15,15 L20,15'}],
+    ['path', {class: 'hand minute', d: 'M15,15 L15,2'}],
+    ['path', {d: 'M0,0 L1,1'}],
+    ['path', {d: 'M0,0 L1,1'}],
 ])
 ```
 
@@ -214,7 +214,6 @@ HTML(['svg', {xmlns: 'http://www.w3.org/2000/svg',
     <path class="hand minute" d="M15,15 L15,2"></path>
     <path d="M0,0 L1,1"></path>
     <path d="M0,0 L1,1"></path>
-    <text x="0" y="0">Path can be also be called without args!</text>
 </svg>
 ```
 
