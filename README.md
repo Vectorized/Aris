@@ -1,4 +1,4 @@
-![Aris - Write HTML in JS easily](https://raw.githubusercontent.com/Vectorized/Aris/master/logo.png =246x128)
+<img src="https://raw.githubusercontent.com/Vectorized/Aris/master/logo.png" width="246" height="128">
 
 ![NPM](https://img.shields.io/npm/l/aris)
 ![npm](https://img.shields.io/npm/v/aris)
