@@ -7,7 +7,7 @@ If you know JS and HTML, you already know Aris.
 ## Usage 
 
 **browser:**  
-```<script src="https://cdn.jsdelivr.net/npm/aris@1.0.7/aris.min.js"></script>```
+```<script src="https://cdn.jsdelivr.net/npm/aris/aris.min.js"></script>```
 
 **npm:**  
 ```npm i aris```
