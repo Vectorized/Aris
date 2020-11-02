@@ -16,7 +16,7 @@ Or you can clone/download this github.
 
 ## Converter
 
-[Link to converter.](https://bkys.io/aris/converter.html)
+[Convert HTML to Aris.](https://bkys.io/aris/converter.html)
 
 ## Overview
 
