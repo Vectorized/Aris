@@ -1,10 +1,16 @@
-[![Aris](https://raw.githubusercontent.com/Vectorized/Aris/master/logo.png)](https://github.com/Vectorized/Aris "Aris")
+![Aris - Write HTML in JS easily](https://raw.githubusercontent.com/Vectorized/Aris/master/logo.png)
+
+![NPM](https://img.shields.io/npm/l/aris)
+![npm](https://img.shields.io/npm/v/aris)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/aris)
+![Dependencies](https://img.shields.io/badge/dependencies-0-success)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/aris)
 
 # Aris - Write HTML in JS easily.
 
-Aris is a simple library \(\< 5kb minified + gzipped\) that allows you to write HTML in JS easily.
+Aris is a simple library that allows you to write HTML in JS easily.
 
-If you know HTML and JS, you already know Aris. 
+*If you know HTML and JS, you already know Aris.* 
 
 ## Usage 
 
@@ -18,13 +24,13 @@ If you know HTML and JS, you already know Aris.
 npm i aris
 ```
 
-Or you can clone/download this github.
+Or you can clone/download this GitHub repository.
 
 ## Converter
 
 [Convert HTML to Aris.](https://bkys.io/aris/converter.html)
 
-## Overview
+## The Idea
 
 Imagine you want to write the following shit:
 
@@ -144,8 +150,6 @@ Explanation (skip if you can figure out from the example):
      `['div', [1,2,3], function (x) { return x*2 }]`    &#8594;    `<div>246</div>`   
      `['div', [[1,2,3], function (x) { return x*2 }] ]`    &#8594;    `<div>246</div>`
 
-## Other Functions
-
 ### Escaping HTML special characters
 
 - `HTML.escape(text)`  
@@ -171,6 +175,47 @@ Explanation (skip if you can figure out from the example):
   `HTML.hash(HTML(['a', 'x', {id: 'link', href: 'x.com'}]))`    &#8594;    `841135124`    
   `HTML.hash('some string')`    &#8594;    `-984100687`    
   HTML contexts and strings can be hashed to 32-bit integers for compact storage and quick comparison.
+
+## Why use Aris? 
+
+- No dependencies.  
+- No tooling.  
+- No bloat.  
+- No brainer.  
+- No time wasted.  
+- It just works.  
+- Fast.  
+
+If you think something else is better, feel free to try it and do your own comparisons.   
+
+## Support
+
+Aris is actively maintained and constantly tested against all major browsers (even IE).   
+
+If you have any suggestions, questions, or bug reports, please raise an issue.  
+
+## FAQ
+
+- **How does Aris help me create high-performance user interfaces?**
+
+  Aris is just plain old Javascript, all HTML generation is close to the metal.  
+
+  Use Aris to generate complex HTML and update the only the elements you need.   
+
+  This minimizes reflows and you will have a snappy user interface.
+  
+- **What does Aris stands for?**
+  
+  Aris stands for "A Revolution In Syntax".
+  
+  We initially wanted to name our library `html.js`, but the name was taken on npm.  
+  
+  If there is a namespace collision, you can use `aris` instead of `HTML`.  
+  `HTML` &#8594; `aris`  
+  `HTML.SVG` &#8594; `aris.svg`  
+  `HTML.SVG.Path` &#8594; `aris.svg.path`  
+
+## Bonus Features
 
 ### SVG
 
@@ -267,56 +312,6 @@ This is just a bonus feature to make making single-page-apps easier.
 - `HTML.route.go()`  
   Attempts to execute the function attached to the path in the address bar.   
   (i.e. `window.location.hash`)  
-
-## Why use Aris? 
-
-Aris saves you time, effort, and brain space.    
-
-If you think something else is better, feel free to use them and do your own comparisons.   
-
-## Advantages
-
-- Just plain old JS.    
-- Zero dependencies.    
-- Zero tooling.    
-- Learn once, use forever.   
-- Automagic CSS prefixing.    
-- Fast.  
-
-## Performance
-
-Very fast. If anything lags, it is probably something else.  
-
-## Support
-
-Aris is actively maintained and constantly tested against all major browsers (even IE).   
-
-If you have any suggestions, questions, or bug reports, raise an issue.  
-
-## FAQ
-
-- **How does Aris help me create high-performance user interfaces?**
-
-  Aris is just plain old Javascript, all HTML generation is close to the metal.  
-
-  Use Aris to generate complex HTML and update the only the elements you need.   
-
-  This minimizes reflows and you will have a snappy user interface.
-  
-- **What does Aris stands for?**
-  
-  Aris stands for "A Revolution In Syntax".
-  
-  We initially wanted to name our library `html.js`.  
-  However, when we tried to publicize our library on npm, we found that most of the good short names  
-  have been already taken by name-squatters or poor-quality libraries.  
-
-  Hence, have choosen to settle with another short but memorable name! 
-  
-  If there is a namespace collision, you can use `aris` instead of `HTML`.  
-  `HTML` &#8594; `aris`  
-  `HTML.SVG` &#8594; `aris.svg`  
-  `HTML.SVG.Path` &#8594; `aris.svg.path`  
 
 ## License
 
