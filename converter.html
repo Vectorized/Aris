@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <meta charset="UTF-8"> 
-<title>HTML to Aris</title>
+<title>HTML to Aris Converter</title>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"></script>
@@ -21,12 +21,16 @@ $(function () {
         var isArray = isT('Array');
 
         self.htmlToCtx = function (html) {
+            
             var tagRe = /<(\/)?([^\s<>"'`=]+)((\s+[^\s<>"'`=]+(\s*=\s*("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^'">\s]+))?)+\s*|\s*)(\/)?>/g;
             var attrRe = /([^\s<>"'`=]+)(\s*=\s*("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|[^'">\s]+))?/g;
             var voidsRe = /area|base|br|col|command|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr/;
             var stripWsRe = /^\s*|\s*$|([\s])+/g;
 
             var m, root = [''], stack = {c: root}, last = 0, d, tag, k, v;
+
+            // remove comments
+            html = html.replace(/("[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*'|`[^`\\]*(?:\\.[^`\\]*)*`)|(<!--[\S\s]*?-->)/g, '$1');
 
             while (m = tagRe.exec(html)) {
                 if (!stack) 
