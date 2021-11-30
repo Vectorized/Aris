@@ -1,5 +1,5 @@
 /*!
- * Aris JavaScript Library v1.0.8
+ * Aris JavaScript Library v1.0.10
  * @author Benjamin Kang Yue Sheng
  * MIT license
  * 
@@ -685,7 +685,7 @@
 
 		if (!n) return '';
 
-		if (n && (isArray(context[0]) || context[0] === null || !tag.match(htmlTagRe))) {
+		if (n && (isArray(context[0]) || isUndefinedOrNull(context[0]) || !tag.match(htmlTagRe))) {
 			for (r = '', i = 0; i < n; i++) {
 				if (isFunction(context[i+1])) {
 					mn = mapNext(context, i);
@@ -699,7 +699,7 @@
 			return r;
 		}
 
-		for (i = 1; i < n; i++) if (context[i] !== null) {
+		for (i = 1; i < n; i++) if (!isUndefinedOrNull(context[i])) {
 			obj = context[i];
 			if (isArray(obj)) {
 				if (isFunction(context[i+1])) {
@@ -720,7 +720,7 @@
 							css[mSub[1]] = mSub[2];
 						v = css;
 					}
-					if (obj.hasOwnProperty(k) && v !== null) {
+					if (obj.hasOwnProperty(k) && !isUndefinedOrNull(v)) {
 						if (isObject(v)) {
 							if (!attrs.hasOwnProperty(k) || !isObject(attrs[k])) 
 								attrs[k] = {};
