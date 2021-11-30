@@ -214,10 +214,10 @@
 	"use strict";
 
 	var document = window.document;
-	var gcs = window.getComputedStyle;
+	var gcs = function (x) { return window.getComputedStyle(x) };
 	var isUndefined = function (x) { return typeof(x) == 'undefined'; };
 
-	var noBrowser = isUndefined(document) || isUndefined(gcs);
+	var noBrowser = isUndefined(document);
 
 	var toSet = function (s) {
 		for (var d = {}, i = (s = s.split(',')).length; i--;) d[s[i]] = 1;
@@ -236,9 +236,6 @@
 	var stringTrimRe = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 	var splitWordsRe = /(?:(?:^|[A-Z])[a-z]+|[0-9]+|[A-Za-z]+)/g;
 
-	var hashPopRe = /(?:(^\/)|\/)[^\/]+[\/]*$/; // $1
-	var hashResolveRe = /^#\/?|(\/)(?:\.?\/)+|(?:(?!\.\.?)[^\/])+\/\.\.(?:\/|$)|([^\^])\/+$/;
-	var hashCompsRe = /(?:(^|\/)(:?)([^\/]+))/g;
 	var locationPathPopRe = /((^|\/)[^\/]*)$/;
 	var htmlTagRe = /^[\w]+$/;
 
@@ -854,8 +851,29 @@
 		svgPath[c] = svgPathAppender(c);
 
 	HTML.SVG.Path = svgPath;
+
+	var onceDones = {};
+	var once = function (k, t, f) {
+		if (onceDones[k]) {
+			if (isFunction(f)) f();
+			return false;
+		} else {
+			onceDones[k] = 1;
+			if (isFunction(t)) t();
+		}
+		return true;
+	};
+	once.clear = function (k) {
+		delete onceDones[k];
+		return once;
+	};
+	HTML.once = once;
+
+	var hashPopRe = /(?:(^\/)|\/)[^\/]+[\/]*$/; // $1
+	var hashResolveRe = /^#?\/?|(\/)(?:\.?\/)+|(?:(?!\.\.?)[^\/])+\/\.\.(?:\/|$)|([^\^])\/+$/;
+	var hashCompsRe = /(?:(^|\/)(:?)([^\/]+))/g;
 	
-	var routes = {}, savedRoutes = {}, routesInited = 0, refreshable = 0;
+	var routes = {}, savedRoutes = {}, routesInited = 0, refreshable = 0, visited = [];
 
 	var hashResolve = function (h) {
 		for (var p, t = 1; t; ) {
@@ -865,9 +883,18 @@
 		}
 		return h;
 	};
+	var setVisited = function (p) {
+		if (visited.length < 1) {
+			setTimeout(function () {
+				visited = [];
+			}, 60);
+		}
+		visited.push(p);
+	}
+
 	//HTML.hashResolve = hashResolve;
 	var execRoute = function (h, s) {
-		var p = '', j, c, m, a = hashResolve(h);
+		var p = '', j, c, m, a = hashResolve(h), t = h.length;
 		while (m = hashCompsRe.exec(a)) {
 			p += m[1];
 			c = m[3];
@@ -876,13 +903,24 @@
 			if (!s) savedRoutes[p] = c;
 			p += c;
 		}
-		for (j = p; j; j = j.replace(hashPopRe, '$1')) {
+		for (j = p; j && t > 0; j = j.replace(hashPopRe, '$1')) {
 			if (routes[j]) {
 				p = j;
 				j = '';
 			}
+			--t;
 		}
-		if (!s && isFunction(c = routes[p])) c();
+		if (!s && isFunction(c = routes[p])) {
+			if (visited.indexOf(p) < 0) {
+				setVisited(p);
+				c();
+			} else {
+				var v = h.replace('/:', '/');
+				if (v != h && visited.indexOf(v) < 0) {
+					execRoute(v);
+				}
+			}
+		}
 		return p;
 	};
 
@@ -938,8 +976,6 @@
 				// HTML.route('a', fn).route('b', fn)
 				return HTML; 	
 			} 
-			// If no args are provided, 
-			// return the window.location.hash splitted.
 			return routes[execRoute(hashResolve(r), 1)];
 		};
 
