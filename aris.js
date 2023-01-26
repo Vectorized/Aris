@@ -1,6 +1,6 @@
 /*!
- * Aris JavaScript Library v1.0.10
- * @author Benjamin Kang Yue Sheng
+ * Aris JavaScript Library v1.0.11
+ * @author vectorized.eth
  * MIT license
  * 
  * Includes PrefixFree v1.0.7 
