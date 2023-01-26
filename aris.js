@@ -655,7 +655,7 @@
 		var v = context[i].slice(), j, o = i + 1, n = v.length, r = '';
 		for (o = i + 1; isFunction(context[o]); ++o) 
 			for (j = 0; j < n; ++j) 
-				v[j] = context[o](v[j]);
+				v[j] = context[o](v[j], j);
 		for (j = 0; j < n; ++j) 
 			r += HTML(v[j]);
 		return {r: r, i: o - 1};
