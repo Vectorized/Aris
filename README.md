@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/Vectorized/Aris/master/logo.png" width="246" height="128">
+<img src="https://raw.githubusercontent.com/Vectorized/Aris/master/logo.svg" width="246" height="128">
 
 ![NPM](https://img.shields.io/npm/l/aris)
 ![npm](https://img.shields.io/npm/v/aris)
